@@ -6,16 +6,16 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class Square extends JPanel {
-    private int row, col;
+    private int col, row;
     private Piece piece;
     private boolean isHighlighted = false;  // To track if the square is highlighted
     private boolean isLegalMove = false;  // To track if this square is a legal move
 
-    public Square(int row, int col) {
-        this.row = row;
+    public Square(int col, int row) {
         this.col = col;
+        this.row = row;
         setPreferredSize(new Dimension(100, 100)); // Adjust size as needed
-        setBackground(getSquareColor(row, col));
+        setBackground(getSquareColor(col, row));
 
         // Add mouse listener to detect clicks
         addMouseListener(new MouseAdapter() {
@@ -59,8 +59,8 @@ public class Square extends JPanel {
         repaint();
     }
 
-    private Color getSquareColor(int row, int col) {
-        return (row + col) % 2 == 0 ? Color.WHITE : Color.GRAY;
+    private Color getSquareColor(int col, int row) {
+        return (col + row) % 2 == 0 ? Color.WHITE : Color.GRAY;
     }
 
     public Piece getPiece() {
@@ -73,9 +73,15 @@ public class Square extends JPanel {
         repaint();
     }
 
-    public void removePiece() {
+    public void setPiece(Piece piece, boolean show) {
+        this.piece = piece;
+        piece.setPosition(this);
+        if (show) repaint();
+    }
+
+    public void removePiece(boolean show) {
         this.piece = null;
-        repaint();
+        if (show) repaint();
     }
 
     // public void capture(Piece piece) {

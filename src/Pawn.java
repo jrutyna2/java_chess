@@ -18,7 +18,7 @@ public class Pawn extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wpawn.png" : "resources/bpawn.png");
             // Use the class loader to load the resource
@@ -51,61 +51,66 @@ public class Pawn extends Piece {
         int y = this.getSquare().getRank();
         String c = this.getColor();
 
+        // System.out.println("Pawn at ("+x+","+y+")");
+
         if (c == "white") {
+            //White Pawn first move; forward 2 squares.
             if (!this.getHasMoved()) {
-                if (!board[y+2][x].isOccupied() && !board[y+1][x].isOccupied()) {
-                    legalMoves.add(board[y+2][x]);
+                if (!board[x][y+2].isOccupied() && !board[x][y+1].isOccupied()) {
+                    legalMoves.add(board[x][y+2]);
+                    // System.out.println("legalMove at ("+x+","+(y+2)+")");
                 }
             }
-
+            //White Pawn forward 1 square.
             if (y+1 <= 7) {
-                if (!board[y+1][x].isOccupied()) {
-                    legalMoves.add(board[y+1][x]);
+                if (!board[x][y+1].isOccupied()) {
+                    legalMoves.add(board[x][y+1]);
+                    // System.out.println("legalMove at ("+x+","+(y+1)+")");
                 }
             }
-
-            if (x+1 <= 7 && y+1 <= 7) {
-                if (board[y+1][x+1].isOccupied()) {
-                    if (board[y+1][x+1].getPieceColor() != "white") {
-                        legalMoves.add(board[y+1][x+1]);
+            //White Pawn left diagonal 1 square (capture).
+            if (x-1 >= 0 && y+1 <= 7) {
+                if (board[x-1][y+1].isOccupied()) {
+                    if (board[x-1][y+1].getPieceColor() != "white") {
+                        legalMoves.add(board[x-1][y+1]);
                     }
                 }
             }
-
-            if (x-1 >= 0 && y+1 <= 7) {
-                if (board[y+1][x-1].isOccupied()) {
-                    if (board[y+1][x-1].getPieceColor() != "white") {
-                        legalMoves.add(board[y+1][x-1]);
+            //White Pawn right diagonal 1 square (capture).
+            if (x+1 <= 7 && y+1 <= 7) {
+                if (board[x+1][y+1].isOccupied()) {
+                    if (board[x+1][y+1].getPieceColor() != "white") {
+                        legalMoves.add(board[x+1][y+1]);
                     }
                 }
             }
         }
-
         if (c == "black") {
+            //Black Pawn first move; forward 2 squares.
             if (!this.getHasMoved()) {
-                if (!board[y-2][x].isOccupied() && !board[y-1][x].isOccupied()) {
-                    legalMoves.add(board[y-2][x]);
+                if (!board[x][y-2].isOccupied() && !board[x][y-1].isOccupied()) {
+                    legalMoves.add(board[x][y-2]);
                 }
             }
-
+            //Black Pawn forward 1 square.
             if (y-1 >= 0) {
-                if (!board[y-1][x].isOccupied()) {
-                    legalMoves.add(board[y-1][x]);
+                if (!board[x][y-1].isOccupied()) {
+                    legalMoves.add(board[x][y-1]);
                 }
             }
-
+            //Black Pawn left diagonal 1 square (capture).
             if (x-1 >= 0 && y-1 >= 0) {
-                if (board[y-1][x-1].isOccupied()) {
-                    if (board[y-1][x-1].getPieceColor() != "black") {
-                        legalMoves.add(board[y-1][x-1]);
+                if (board[x-1][y-1].isOccupied()) {
+                    if (board[x-1][y-1].getPieceColor() != "black") {
+                        legalMoves.add(board[x-1][y-1]);
                     }
                 }
             }
-
+            //Black Pawn right diagonal 1 square (capture).
             if (x+1 <= 7 && y-1 >= 0) {
-                if (board[y-1][x+1].isOccupied()) {
-                    if (board[y-1][x+1].getPieceColor() != "black") {
-                        legalMoves.add(board[y-1][x+1]);
+                if (board[x+1][y-1].isOccupied()) {
+                    if (board[x+1][y-1].getPieceColor() != "black") {
+                        legalMoves.add(board[x+1][y-1]);
                     }
                 }
             }

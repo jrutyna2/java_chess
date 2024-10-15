@@ -34,19 +34,31 @@ public abstract class Piece {
         return color;
     }
 
-    public void move(Square destination) {
-        currentSquare.removePiece();
+    public void move(Square destination, boolean show) {
+        currentSquare.removePiece(show);
         this.currentSquare = destination;
-        destination.setPiece(this);
-        this.hasMoved = true;
+        destination.setPiece(this, show);
+        if (show) this.hasMoved = true;
     }
+
+    // public void test_move(Square destination) {
+    //     currentSquare.removePiece(false);
+    //     this.currentSquare = destination;
+    //     destination.setPiece(this, false);
+    // }
 
     public void capture(Board b, Square destination) {
         Piece p = destination.getPiece();
         if (p.getColor() == "white") b.Wpieces.remove(p);
         if (p.getColor() == "black") b.Bpieces.remove(p);
-        destination.removePiece();
-        this.move(destination);
+        destination.removePiece(true);
+        this.move(destination, true);
+    }
+
+    public void test_capture(Board b, Square destination) {
+        Piece p = destination.getPiece();
+        destination.removePiece(false);
+        this.move(destination, false);
     }
 
     public Boolean getHasMoved() {
@@ -55,6 +67,74 @@ public abstract class Piece {
 
     public void setHasMoved(Boolean moved) {
         this.hasMoved = moved;
+    }
+
+    public int[] getVerticalRelations(Square[][] board, int x, int y) {
+        int yAbove = y;
+        int yBelow = y;
+
+        // if (y == 7) yAbove = -1;
+        // else {
+            for (int i = y+1; i <= 7; i++) {
+                if (board[x][i].isOccupied()) {
+                    //Capture Above
+                    if (board[x][i].getPiece().getColor() != this.color)
+                        yAbove = i;
+                    break;
+                }
+                //Move Above
+                else yAbove = i;
+            }
+        // }
+        // if (y == 0) yBelow = -1;
+        // else {
+            for (int i = y-1; i >= 0; i--) {
+                if (board[x][i].isOccupied()) {
+                    //Capture Below
+                    if (board[x][i].getPiece().getColor() != this.color)
+                        yBelow = i;
+                    break;
+                }
+                //Move Below
+                else yBelow = i;
+            }
+        // }
+
+        return new int[] {yAbove, yBelow};
+    }
+
+    public int[] getHorizontalRelations(Square[][] board, int x, int y) {
+        int xLeft = x;
+        int xRight = x;
+
+        // if (x == 0) xLeft = -1;
+        // else {
+            for (int i = x-1; i >= 0; i--) {
+                if (board[i][y].isOccupied()) {
+                    //Capture Left
+                    if (board[i][y].getPiece().getColor() != this.color)
+                        xLeft = i;
+                    break;
+                }
+                //Move Left
+                else xLeft = i;
+            }
+        // }
+        // if (x == 7) xRight = -1;
+        // else {
+            for (int i = x+1; i <= 7; i++) {
+                if (board[i][y].isOccupied()) {
+                    //Capture Right
+                    if (board[i][y].getPiece().getColor() != this.color)
+                        xRight = i;
+                    break;
+                }
+                //Move Right
+                else xRight = i;
+            }
+        // }
+
+        return new int[] {xLeft, xRight};
     }
 
     public int[] getVerticalPcDistances(Square[][] board, int x, int y) {
@@ -125,15 +205,15 @@ public abstract class Piece {
         int yDR = y - 1;
 
         while (xUL >= 0 && yUL <= 7) {
-            if (board[yUL][xUL].isOccupied()) {
-                if (board[yUL][xUL].getPiece().getColor() == this.color) {
+            if (board[xUL][yUL].isOccupied()) {
+                if (board[xUL][yUL].getPiece().getColor() == this.color) {
                     break;
                 } else {
-                    diagDistances.add(board[yUL][xUL]);
+                    diagDistances.add(board[xUL][yUL]);
                     break;
                 }
             } else {
-                diagDistances.add(board[yUL][xUL]);
+                diagDistances.add(board[xUL][yUL]);
                 xUL--;
                 yUL++;
             }
@@ -141,15 +221,15 @@ public abstract class Piece {
         }
 
         while (xDL >= 0 && yDL >= 0) {
-            if (board[yDL][xDL].isOccupied()) {
-                if (board[yDL][xDL].getPiece().getColor() == this.color) {
+            if (board[xDL][yDL].isOccupied()) {
+                if (board[xDL][yDL].getPiece().getColor() == this.color) {
                     break;
                 } else {
-                    diagDistances.add(board[yDL][xDL]);
+                    diagDistances.add(board[xDL][yDL]);
                     break;
                 }
             } else {
-                diagDistances.add(board[yDL][xDL]);
+                diagDistances.add(board[xDL][yDL]);
                 xDL--;
                 yDL--;
             }
@@ -157,15 +237,15 @@ public abstract class Piece {
         }
 
         while (xDR <= 7 && yDR >= 0) {
-            if (board[yDR][xDR].isOccupied()) {
-                if (board[yDR][xDR].getPiece().getColor() == this.color) {
+            if (board[xDR][yDR].isOccupied()) {
+                if (board[xDR][yDR].getPiece().getColor() == this.color) {
                     break;
                 } else {
-                    diagDistances.add(board[yDR][xDR]);
+                    diagDistances.add(board[xDR][yDR]);
                     break;
                 }
             } else {
-                diagDistances.add(board[yDR][xDR]);
+                diagDistances.add(board[xDR][yDR]);
                 xDR++;
                 yDR--;
             }
@@ -173,15 +253,15 @@ public abstract class Piece {
         }
 
         while (xUR <= 7 && yUR <= 7) {
-            if (board[yUR][xUR].isOccupied()) {
-                if (board[yUR][xUR].getPiece().getColor() == this.color) {
+            if (board[xUR][yUR].isOccupied()) {
+                if (board[xUR][yUR].getPiece().getColor() == this.color) {
                     break;
                 } else {
-                    diagDistances.add(board[yUR][xUR]);
+                    diagDistances.add(board[xUR][yUR]);
                     break;
                 }
             } else {
-                diagDistances.add(board[yUR][xUR]);
+                diagDistances.add(board[xUR][yUR]);
                 xUR++;
                 yUR++;
             }
@@ -198,61 +278,58 @@ public abstract class Piece {
 
     public List<Square> getCastlingRights(Square[][] board, String c) {
         LinkedList<Square> castleMoves = new LinkedList<Square>();
-
         if (!this.getHasMoved()) {
-             if (c == "white") {
-                  // System.out.println("true c==0:");
-                  if (board[0][7].isOccupied() && (board[0][7].getPiece() instanceof Rook) && board[0][7].getPieceColor() == "white") {
-                    // System.out.println("true c==0:2");
-                      Piece r1 = board[0][7].getPiece();
-                      if (!r1.getHasMoved()) {
-                          // System.out.println("true c==0:3");
-                          if (!board[0][6].isOccupied() && !board[0][5].isOccupied()) {
-                              castleMoves.add(board[0][6]);
-                              // wCastleKS = true;
-                          }
-                      }
-                  }
-                  if (board[0][0].isOccupied() && (board[0][0].getPiece() instanceof Rook) && board[0][0].getPieceColor() == "white") {
-                      Piece r2 = board[0][0].getPiece();
-                      if (!r2.getHasMoved()) {
-                          if (!board[0][1].isOccupied() && !board[0][2].isOccupied() && !board[0][3].isOccupied()) {
-                              castleMoves.add(board[0][2]);
-                              // wCastleQS = true;
-                          }
-                      }
-                  }
-              }
-              // if (r1.getName().equals("rook"))
-              if (c == "black") {
-                // System.out.println("true c==1:");
-                 if (board[7][7].isOccupied() && (board[7][7].getPiece() instanceof Rook) && board[7][7].getPieceColor() == "black") {
-                   // System.out.println("true c==1:  1");
-                     Piece r1 = board[7][7].getPiece();
-                     if (!r1.getHasMoved()) {
-                     // System.out.println("true c==1:  2");
-                         if (!board[7][6].isOccupied() && !board[7][5].isOccupied()) {
-                             castleMoves.add(board[7][6]);
-                             // bCastleKS = true;
-                         }
-                     }
-                 }
-                 if (board[7][0].isOccupied() && (board[7][0].getPiece() instanceof Rook) && board[7][0].getPieceColor() == "black") {
-                   // System.out.println("true c==1:  3");
-                     Piece r2 = board[7][0].getPiece();
-                     if (!r2.getHasMoved()) {
-                     // System.out.println("true c==1:  4");
-                         if (!board[7][1].isOccupied() && !board[7][2].isOccupied() && !board[7][3].isOccupied()) {
-                             castleMoves.add(board[7][2]);
-                             // bCastleQS = true;
-                          }
-                     }
-                 }
+            if (c == "white") {
+                // System.out.println("true c==0:");
+                if (board[0][0].isOccupied() && (board[0][0].getPiece() instanceof Rook) && board[0][0].getPieceColor() == "white") {
+                    Piece r2 = board[0][0].getPiece();
+                    if (!r2.getHasMoved()) {
+                        if (!board[1][0].isOccupied() && !board[2][0].isOccupied() && !board[3][0].isOccupied()) {
+                            castleMoves.add(board[2][0]);
+                            // wCastleQS = true;
+                        }
+                    }
+                }
+                if (board[7][0].isOccupied() && (board[7][0].getPiece() instanceof Rook) && board[7][0].getPieceColor() == "white") {
+                // System.out.println("true c==0:2");
+                    Piece r1 = board[7][0].getPiece();
+                    if (!r1.getHasMoved()) {
+                        // System.out.println("true c==0:3");
+                        if (!board[6][0].isOccupied() && !board[5][0].isOccupied()) {
+                            castleMoves.add(board[6][0]);
+                            // wCastleKS = true;
+                        }
+                    }
                 }
             }
-
+            // if (r1.getName().equals("rook"))
+            if (c == "black") {
+                if (board[0][7].isOccupied() && (board[0][7].getPiece() instanceof Rook) && board[0][7].getPieceColor() == "black") {
+                    // System.out.println("true c==1:  3");
+                    Piece r2 = board[0][7].getPiece();
+                    if (!r2.getHasMoved()) {
+                        // System.out.println("true c==1:  4");
+                        if (!board[1][7].isOccupied() && !board[2][7].isOccupied() && !board[3][7].isOccupied()) {
+                            castleMoves.add(board[2][7]);
+                            // bCastleQS = true;
+                        }
+                    }
+                }
+                // System.out.println("true c==1:");
+                if (board[7][7].isOccupied() && (board[7][7].getPiece() instanceof Rook) && board[7][7].getPieceColor() == "black") {
+                    // System.out.println("true c==1:  1");
+                    Piece r1 = board[7][7].getPiece();
+                    if (!r1.getHasMoved()) {
+                        // System.out.println("true c==1:  2");
+                        if (!board[6][7].isOccupied() && !board[5][7].isOccupied()) {
+                            castleMoves.add(board[6][7]);
+                            // bCastleKS = true;
+                        }
+                     }
+                }
+            }
+        }
         return castleMoves;
-
     }
 
     // Abstract method to draw the piece

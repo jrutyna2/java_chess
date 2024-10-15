@@ -1,0 +1,10 @@
+NOTES/TODO:
+Capture doesn't work when testing all moves in check..
+Back to manually adding capture to legal moves
+
+Castling:
+- Add checks to ensure King does not "castle through check"
+
+Promotion
+Pinned Pieces       -- Done
+En passant?

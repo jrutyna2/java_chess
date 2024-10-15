@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
 
+import java.util.Arrays;  // tempt to print array
+
 public class Rook extends Piece {
     private Image image;
 
@@ -16,7 +18,7 @@ public class Rook extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wrook.png" : "resources/brook.png");
             // Use the class loader to load the resource
@@ -48,15 +50,22 @@ public class Rook extends Piece {
         int x = this.getSquare().getFile();
         int y = this.getSquare().getRank();
 
-        int[] vertDistances = getVerticalPcDistances(board, x, y);
+        // int[] vertDistances = getVerticalPcDistances(board, x, y);
+        int[] horzDistances = getHorizontalRelations(board, x, y);
+        int[] vertDistances = getVerticalRelations(board, x, y);
 
-        for (int i = vertDistances[1]; i <= vertDistances[0]; i++) {
-            if (i != y) legalMoves.add(board[i][x]);
+// System.out.println("\nRook");
+// System.out.println("horzDistances("+x+","+y+"): " + Arrays.toString(horzDistances));
+// System.out.println("vertDistances("+x+","+y+"): " + Arrays.toString(vertDistances));
+
+        for (int i = horzDistances[0]; i <= horzDistances[1]; i++) {
+            if (i != x) legalMoves.add(board[i][y]);
         }
 
-        for (int i = vertDistances[2]; i <= vertDistances[3]; i++) {
-            if (i != x) legalMoves.add(board[y][i]);
+        for (int i = vertDistances[0]; i >= vertDistances[1]; i--) {
+            if (i != y) legalMoves.add(board[x][i]);
         }
+
 
         return legalMoves;
     }

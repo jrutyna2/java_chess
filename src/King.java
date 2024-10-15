@@ -16,7 +16,7 @@ public class King extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wking.png" : "resources/bking.png");
             // Use the class loader to load the resource
@@ -56,21 +56,21 @@ public class King extends Piece {
             i = x+x_moves[k];
             j = y+y_moves[k];
             if (b.isInBounds(i, j)) {
-                if (board[j][i].isOccupied()) {
-                    if (board[j][i].getPiece().getColor() == this.getColor())
+                if (board[i][j].isOccupied()) {
+                    if (board[i][j].getPiece().getColor() == this.getColor())
                         continue;
                     else {
-                      legalMoves.add(board[j][i]);
+                      legalMoves.add(board[i][j]);
                     }
                 }
                 else {
-                    legalMoves.add(board[j][i]);
+                    legalMoves.add(board[i][j]);
                 }
             }
         }
 
-        List<Square> castlingMoves = getCastlingRights(board, c);
-        legalMoves.addAll(castlingMoves);
+        // List<Square> castlingMoves = getCastlingRights(board, c);
+        // legalMoves.addAll(castlingMoves);
 
         return legalMoves;
     }

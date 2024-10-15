@@ -16,7 +16,7 @@ public class Queen extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wqueen.png" : "resources/bqueen.png");
             // Use the class loader to load the resource
@@ -48,20 +48,36 @@ public class Queen extends Piece {
         int x = this.getSquare().getFile();
         int y = this.getSquare().getRank();
 
-        int[] vertDistances = getVerticalPcDistances(board, x, y);
+        // int[] vertDistances = getVerticalPcDistances(board, x, y);
+        int[] horzDistances = getHorizontalRelations(board, x, y);
+        int[] vertDistances = getVerticalRelations(board, x, y);
 
-        for (int i = vertDistances[1]; i <= vertDistances[0]; i++) {
-            if (i != y) legalMoves.add(board[i][x]);
+// System.out.println("vertDistances("+x+","+y+"): " + Arrays.toString(vertDistances));
+
+        for (int i = horzDistances[0]; i <= horzDistances[1]; i++) {
+            if (i != x) legalMoves.add(board[i][y]);
         }
 
-        for (int i = vertDistances[2]; i <= vertDistances[3]; i++) {
-            if (i != x) legalMoves.add(board[y][i]);
+        for (int i = vertDistances[0]; i >= vertDistances[1]; i--) {
+            if (i != y) legalMoves.add(board[x][i]);
         }
+
+        // for (int i = vertDistances[1]; i <= vertDistances[0]; i++) {
+        //     if (i != y) legalMoves.add(board[i][x]);
+        // }
+        //
+        // for (int i = vertDistances[2]; i <= vertDistances[3]; i++) {
+        //     if (i != x) legalMoves.add(board[y][i]);
+        // }
 
         List<Square> diagonalMoves = getDiagonalPcDistances(board, x, y);
 
         legalMoves.addAll(diagonalMoves);
-        
+// System.out.println("Queen:"+this.getColor());
+//         for (Square move : legalMoves) {
+//             System.out.println("Queen:("+move.getFile()+","+move.getRank()+")");
+//         }
+
         return legalMoves;
     }
 

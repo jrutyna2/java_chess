@@ -16,6 +16,12 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
 
     private boolean whiteTurn;
 
+    private boolean whiteQueenSideCastle = false;
+    private boolean whiteKingSideCastle = false;
+    private boolean blackQueenSideCastle = false;
+    private boolean blackKingSideCastle = false;
+
+
     public Board() {
         setLayout(new GridLayout(8, 8));
         squares = new Square[8][8];
@@ -30,9 +36,9 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
         // Initialize each square on the board
         // for (int row = 0; row < 8; row++) { // Play Black
         for (int row = 7; row >= 0; row--) { // Play White; Start from row 7 (bottom of array)
-            for (int col = 0; col < 8; col++) {
-                squares[row][col] = new Square(row, col);
-                add(squares[row][col]);
+            for (int col = 0; col <= 7; col++) {
+                squares[col][row] = new Square(col, row);
+                add(squares[col][row]);
             }
         }
         // Set up pieces on the board
@@ -41,69 +47,41 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
 
     private void setupPieces() {
         // Place pawns on the board
-        for (int x = 0; x < 8; x++) {
-            squares[1][x].setPiece(new Pawn("white", squares[1][x]));
-            squares[6][x].setPiece(new Pawn("black", squares[6][x]));
+        for (int x = 0; x <= 7; x++) {
+            squares[x][1].setPiece(new Pawn("white", squares[x][1]));
+            squares[x][6].setPiece(new Pawn("black", squares[x][6]));
         }
 
         // Create special variables to track each king
-        wk = new King("white", squares[0][4]);
-        bk = new King("black", squares[7][4]);
+        wk = new King("white", squares[4][0]);
+        bk = new King("black", squares[4][7]);
 
-        // // White pieces
+        // White pieces
         squares[0][0].setPiece(new Rook("white", squares[0][0]));
-        squares[0][1].setPiece(new Knight("white", squares[0][1]));
-        squares[0][2].setPiece(new Bishop("white", squares[0][2]));
-        squares[0][3].setPiece(new Queen("white", squares[0][3]));
-        squares[0][4].setPiece(wk);
-        squares[0][5].setPiece(new Bishop("white", squares[0][5]));
-        squares[0][6].setPiece(new Knight("white", squares[0][6]));
-        squares[0][7].setPiece(new Rook("white", squares[0][7]));
-        //
-        // // Black pieces
-        squares[7][0].setPiece(new Rook("black", squares[7][0]));
-        squares[7][1].setPiece(new Knight("black", squares[7][1]));
-        squares[7][2].setPiece(new Bishop("black", squares[7][2]));
-        squares[7][3].setPiece(new Queen("black", squares[7][3]));
-        squares[7][4].setPiece(bk);
-        squares[7][5].setPiece(new Bishop("black", squares[7][5]));
-        squares[7][6].setPiece(new Knight("black", squares[7][6]));
+        squares[1][0].setPiece(new Knight("white", squares[1][0]));
+        squares[2][0].setPiece(new Bishop("white", squares[2][0]));
+        squares[3][0].setPiece(new Queen("white", squares[3][0]));
+        squares[4][0].setPiece(wk);
+        squares[5][0].setPiece(new Bishop("white", squares[5][0]));
+        squares[6][0].setPiece(new Knight("white", squares[6][0]));
+        squares[7][0].setPiece(new Rook("white", squares[7][0]));
+
+        // Black pieces
+        squares[0][7].setPiece(new Rook("black", squares[0][7]));
+        squares[1][7].setPiece(new Knight("black", squares[1][7]));
+        squares[2][7].setPiece(new Bishop("black", squares[2][7]));
+        squares[3][7].setPiece(new Queen("black", squares[3][7]));
+        squares[4][7].setPiece(bk);
+        squares[5][7].setPiece(new Bishop("black", squares[5][7]));
+        squares[6][7].setPiece(new Knight("black", squares[6][7]));
         squares[7][7].setPiece(new Rook("black", squares[7][7]));
 
-        Wpieces.add(squares[0][2].getPiece());
-        Wpieces.add(squares[1][4].getPiece());
-        Wpieces.add(squares[1][3].getPiece());
-        Wpieces.add(squares[0][6].getPiece());
-        Wpieces.add(squares[0][5].getPiece());
-        Wpieces.add(squares[0][1].getPiece());
-        Wpieces.add(squares[0][3].getPiece());
-        Wpieces.add(squares[1][2].getPiece());
-        Wpieces.add(squares[1][0].getPiece());
-        Wpieces.add(squares[1][7].getPiece());
-        Wpieces.add(squares[1][1].getPiece());
-        Wpieces.add(squares[0][0].getPiece());
-        Wpieces.add(squares[0][4].getPiece());
-        Wpieces.add(squares[0][7].getPiece());
-        Wpieces.add(squares[1][5].getPiece());
-        Wpieces.add(squares[1][6].getPiece());
-
-        Bpieces.add(squares[7][2].getPiece());
-        Bpieces.add(squares[6][4].getPiece());
-        Bpieces.add(squares[6][3].getPiece());
-        Bpieces.add(squares[7][6].getPiece());
-        Bpieces.add(squares[7][5].getPiece());
-        Bpieces.add(squares[7][1].getPiece());
-        Bpieces.add(squares[7][3].getPiece());
-        Bpieces.add(squares[6][2].getPiece());
-        Bpieces.add(squares[6][0].getPiece());
-        Bpieces.add(squares[6][7].getPiece());
-        Bpieces.add(squares[6][1].getPiece());
-        Bpieces.add(squares[7][0].getPiece());
-        Bpieces.add(squares[7][4].getPiece());
-        Bpieces.add(squares[7][7].getPiece());
-        Bpieces.add(squares[6][5].getPiece());
-        Bpieces.add(squares[6][6].getPiece());
-
+        for (int x = 0; x <= 7; x++) {
+            Wpieces.add(squares[x][0].getPiece()); //add white pieces to LinkedList
+            Wpieces.add(squares[x][1].getPiece()); //add white pawns to LinkedList
+            Bpieces.add(squares[x][6].getPiece()); //add black pawns to LinkedList
+            Bpieces.add(squares[x][7].getPiece()); //add black pieces to LinkedList
+        }
     }
 
     public void handleSquareClick(Square clickedSquare) {
@@ -131,7 +109,8 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
                     System.out.println("!clickedSquare.isOccupied()");
                     if (clickedSquare.getisLegalMove()) {
                         System.out.println("isLegalMove(clickedSquare)");
-                        selectedSquare.getPiece().move(clickedSquare);
+                        selectedSquare.getPiece().move(clickedSquare, true);
+                        checkIfCastlingMove(selectedSquare, clickedSquare);
                         clearHighlights();
                         selectedSquare = null;
                         changeTurn();
@@ -175,66 +154,121 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
 
         List<Square> moves = piece.getLegalMoves(this);
         List<Square> legalMoves = new LinkedList<Square>();
-
-        //First check if current moves king is in check
+        // legalMoves.addAll(moves);
+        //White Turn
         if (whiteTurn) {
+            //First check if current moves king is in check
             LinkedList<Piece> checking_pieces = isWhiteInCheck();
+            //If King is in Check
             if (!checking_pieces.isEmpty()) {
                 System.out.println("WHITE IN CHECK");
-                //If only 1 attacking piece, capture piece? block? move?
+                //If only 1 checking piece, capture piece?
                 if (checking_pieces.size() == 1) {
                     Piece checking_piece = checking_pieces.get(0);
-                    // can capture?
                     for (Square move : moves) {
                         if (move == checking_piece.getSquare()) {
                             legalMoves.add(move); //is protected?
                         }
                     }
-                    //can block?
-                    //calculate squares between king and attacking piece
-                    blockSquare = canBlock(wk, checking_piece, moves);
                 }
-                //If more > 1 attacking piece, King must move
-                else {
-
-                    //If King cannot move, checkmate.
+                // block Check? move King?
+                for (Square move : moves) {
+                    // Test all moves, if move doesn't put king in check, add to legal moves.
+                    if (testMove(piece.getSquare(), move)) {
+                        legalMoves.add(move);
+                    }
                 }
-                System.out.println(checking_pieces.size());
+                //If King cannot move, checkmate.
+                if (legalMoves.isEmpty()) {
+                    System.out.println("CHECKMATE! WHITE LOSES.");
+                }
+                // System.out.println(checking_pieces.size());
             }
+            //If King is NOT in Check
             else {
-                legalMoves.addAll(moves);
+                // Test all moves, if move doesn't put king in check, add to legal moves.
+                for (Square move : moves) {
+                    if (testMove(piece.getSquare(), move)) {
+                        legalMoves.add(move);
+                    }
+                }
+                if (piece instanceof King) {
+                    List<Square> castlingMoves = piece.getCastlingRights(squares, "white");
+                    if (!castlingMoves.isEmpty()) {
+                        if (castlingMoves.contains(squares[2][0])) whiteQueenSideCastle = true;
+                        if (castlingMoves.contains(squares[6][0])) whiteKingSideCastle = true;
+                    }
+                    legalMoves.addAll(castlingMoves);
+                }
             }
         }
-        //First check if current moves king is in check
+        //Black turn
         else if (!whiteTurn) {
             LinkedList<Piece> checking_pieces = isBlackInCheck();
             if (!checking_pieces.isEmpty()) {
                 System.out.println("BLACK IN CHECK");
-                System.out.println(checking_pieces.size());
+                if (checking_pieces.size() == 1) {
+                    Piece checking_piece = checking_pieces.get(0);
+                    for (Square move : moves) {
+                        if (move == checking_piece.getSquare()) {
+                            legalMoves.add(move); //is protected?
+                        }
+                    }
+                }
+                for (Square move : moves) {
+                    if (testMove(piece.getSquare(), move)) {
+                        legalMoves.add(move);
+                    }
+                }
+                if (legalMoves.isEmpty()) {
+                    System.out.println("CHECKMATE! BLACK LOSES.");
+                }
             }
             else {
-                legalMoves.addAll(moves);
+                // Test all moves, if move doesn't put king in check, add to legal moves.
+                for (Square move : moves) {
+                    if (testMove(piece.getSquare(), move)) {
+                        legalMoves.add(move);
+                    }
+                }
+                if (piece instanceof King) {
+                    List<Square> castlingMoves = piece.getCastlingRights(squares, "black");
+                    if (!castlingMoves.isEmpty()) {
+                        if (castlingMoves.contains(squares[2][0])) blackQueenSideCastle = true;
+                        if (castlingMoves.contains(squares[6][0])) blackKingSideCastle = true;
+                    }
+                    legalMoves.addAll(castlingMoves);
+                }
             }
         }
-
         for (Square moveSquare : legalMoves) {
             moveSquare.showLegalMove(true);
         }
     }
 
-    public Square canBlock(King king, Piece checking_piece, LinkedList<Square> moves) {
-        if (checking_piece instanceof Knight) {
-            return null;
-        }
-        else if (checking_piece instanceof Rook) {
-            
-        }
-        else if (checking_piece instanceof Bishop) {
+    public boolean testMove(Square square1, Square square2) {
+        Piece piece1 = square1.getPiece();
+        Piece piece2 = square2.getPiece();
+        boolean allowed = true;
 
-        }
-        else if (checking_piece instanceof Queen) {
+        // move piece to desired square
+        piece1.move(square2, false);
 
-        }
+        // if (piece2 == null)
+        // else {
+        //     System.out.println("test_capture:");
+        //     piece1.test_capture(this, square2);
+        // }
+        // check if move puts King in check
+        if (piece1.getColor().equals("white") && !isWhiteInCheck().isEmpty()) allowed = false;
+        if (piece1.getColor().equals("black") && !isBlackInCheck().isEmpty()) allowed = false;
+        // move piece back to original square
+        piece1.move(square1, false);
+
+        if (piece2 != null) square2.setPiece(piece2, false);
+        // System.out.println("square1:("+square1.getFile()+","+square1.getRank()+"), square2:"+square2.getFile()+","+square2.getRank()+"),allowed:"+allowed);
+// }
+        return allowed;
     }
 
     public LinkedList<Piece> isWhiteInCheck() {
@@ -265,6 +299,23 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
         return checking_pieces;
     }
 
+    public void checkIfCastlingMove(Square selectedSquare, Square clickedSquare) {
+        if (whiteQueenSideCastle == true && clickedSquare.equals(squares[2][0]))
+            squares[0][0].getPiece().move(squares[3][0], true);
+        if (whiteKingSideCastle == true && clickedSquare.equals(squares[6][0]))
+            squares[7][0].getPiece().move(squares[5][0], true);
+        if (blackQueenSideCastle == true && clickedSquare.equals(squares[2][7]))
+            squares[0][7].getPiece().move(squares[3][7], true);
+        if (blackKingSideCastle == true && clickedSquare.equals(squares[6][7]))
+            squares[7][7].getPiece().move(squares[5][7], true);
+
+        whiteQueenSideCastle = false;
+        whiteKingSideCastle = false;
+        blackQueenSideCastle = false;
+        blackKingSideCastle = false;
+    }
+
+
     public boolean isLegalMove(Square square) {
         Color currentColor = square.getBackground();
         if (currentColor.equals(Color.GREEN)) {
@@ -290,18 +341,12 @@ public class Board extends JPanel {//implements MouseListener, MouseMotionListen
         return squares[row][col];
     }
 
-    private void movePiece(Square from, Square to) {
-        Piece movingPiece = from.getPiece();
-        to.setPiece(movingPiece);
-        from.setPiece(null);
-    }
-
     public Square[][] getSquareArray() {
         return this.squares;
     }
 
-    public Boolean isInBounds(int row, int col) {
-        if (row >= 0 && row < 8 && col >= 0 && col < 8)
+    public Boolean isInBounds(int col, int row) {
+        if (col >= 0 && col < 8 && row >= 0 && row < 8)
             return true;
         return false;
     }

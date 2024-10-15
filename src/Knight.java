@@ -16,7 +16,7 @@ public class Knight extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wknight.png" : "resources/bknight.png");
             // Use the class loader to load the resource
@@ -49,22 +49,22 @@ public class Knight extends Piece {
         int y = this.getSquare().getRank();
         int i, j;
         int x_moves[] = {-2, -2, -1, 1, 2, 2, 1, -1};
-        int y_moves[] = {1, -1, -2, -2, -1, 1, 2, 2};        
+        int y_moves[] = {1, -1, -2, -2, -1, 1, 2, 2};
 
-        for (int k = 0; k < 8; k++) {
+        for (int k = 0; k <= 7; k++) {
             i = x+x_moves[k];
             j = y+y_moves[k];
 
             if (b.isInBounds(i,j)) {
-                if (board[j][i].isOccupied()) {
-                    if (board[j][i].getPiece().getColor() == this.getColor())
+                if (board[i][j].isOccupied()) {
+                    if (board[i][j].getPiece().getColor() == this.getColor())
                         continue;
                     else {
-                        legalMoves.add(board[j][i]);
+                        legalMoves.add(board[i][j]);
                     }
                 }
                 else {
-                    legalMoves.add(board[j][i]);
+                    legalMoves.add(board[i][j]);
                 }
             }
         }

@@ -16,7 +16,7 @@ public class Bishop extends Piece {
     }
 
     private void loadImage() {
-        System.out.println("Color: " + this.color);
+        // System.out.println("Color: " + this.color);
         try {
             String filename = (color.equals("white") ? "resources/wbishop.png" : "resources/bbishop.png");
             // Use the class loader to load the resource
