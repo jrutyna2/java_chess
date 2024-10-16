@@ -41,7 +41,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Square> getLegalMoves(Board b) {
+    public List<Square> getPotentialMoves(Board b) {
         Square[][] board = b.getSquareArray();
         int x = this.getSquare().getFile();
         int y = this.getSquare().getRank();

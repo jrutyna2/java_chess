@@ -1,10 +1,21 @@
 NOTES/TODO:
-Capture doesn't work when testing all moves in check..
-Back to manually adding capture to legal moves
 
-Castling:
-- Add checks to ensure King does not "castle through check"
+- Ensure King can't "castle through check"
+- Checkmate alert.                                      -- Added 10/16/2024
+- Stalemate alert.                                      -- Added 10/16/2024
 
-Promotion
-Pinned Pieces       -- Done
-En passant?
+Promotion           -- Done (Auto to Queen)             -- Added 10/15/2024
+Pinned Pieces       -- Done                             -- Added 10/15/2024
+En passant?         -- Done                             -- Added 10/16/2024
+
+- step through handleSquareClick loop
+- Add functionality to flip board after turns
+
+October 15
+- Added Automatic Promotion to Queen
+
+October 16
+- Added En Passant
+- Found issues:
+    (1) King can capture protected piece.               -- Fixed 10/16/2024
+    (2) Pawn can't capture bishop in line with King.    -- Fixed 10/16/2024

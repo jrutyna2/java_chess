@@ -336,5 +336,5 @@ public abstract class Piece {
     public abstract void draw(Graphics g, JComponent component);
 
     // No implementation, to be implemented by each subclass
-    public abstract List<Square> getLegalMoves(Board b);
+    public abstract List<Square> getPotentialMoves(Board b);
 }

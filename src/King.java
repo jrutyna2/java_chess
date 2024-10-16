@@ -41,7 +41,7 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Square> getLegalMoves(Board b) {
+    public List<Square> getPotentialMoves(Board b) {
         LinkedList<Square> legalMoves = new LinkedList<Square>();
         Square[][] board = b.getSquareArray();
 
